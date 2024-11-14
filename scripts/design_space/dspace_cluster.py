@@ -11,7 +11,7 @@ import plotly.graph_objects as go
 from plotly.validators.scatter.marker import SymbolValidator
 
 
-from utils.utils import *
+from scripts.utils.utils import *
 from scripts.design_space.read_data import read_analysis
 from scripts.design_space.dist_matrix import *
 from scripts.design_space.dim_reduction import *
