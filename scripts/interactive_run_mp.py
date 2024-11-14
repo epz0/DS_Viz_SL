@@ -1,0 +1,174 @@
+#%%
+import numpy as np
+from scipy.spatial import Delaunay
+from pathlib import Path
+from design_space.read_data import read_analysis
+from design_space.dist_matrix import *
+from design_space.dim_reduction import *
+from design_space.dspace_dist_metrics import *
+import matplotlib.pyplot as plt
+from scipy.spatial import ConvexHull
+
+
+from dash import Dash, dcc, html, Input, Output, no_update
+#import dash_daq as daq
+import plotly.graph_objects as go
+import plotly.io as pio
+
+#* --- initial definitions ------
+my_dir = Path(r'C:/Py/DS_Viz_Exp/data')                                                   # path to the data file
+filenm = 'MASKED_DATA_analysis_v1.xlsx'                                             # name of the data file
+sheetnm = 'ExpData-100R-Expanded'                                                   # sheet where the data (analysis) is
+#* ------------------------------
+
+#* --- create folder structure ---
+Path(f'{my_dir.parent}/experimental/viz').mkdir(parents=True,exist_ok=True)             # folder export/stats
+#* ------------------------------
+
+dir_exviz = Path(f'{my_dir.parent}'+r'/experimental/viz')
+
+#* reads Excel file with solutions' analysis
+df_base, df_colors, labels = read_analysis(my_dir, filenm, sheetname=sheetnm)
+
+#* calculates distance matrix
+n_distmatrix = calc_distmatrix(df_base, my_dir, filenm)
+
+#* generate the embedding of the distance matrix
+embedding, graph = create_embedding(my_dir, n_distmatrix)
+
+#%%
+def cv_hull_vertices(x, y):
+    """Retrns convex hull metrics and vertices.
+
+    Args:
+        x (list): List of x coordinates.
+        y (list): List of y coordinates.
+
+    Returns:
+        x_vtx: List of x coordinates for the convex hull vertices.
+        y_vtx: List of y coordinates for the convex hull vertices.
+        cvxh_area: Area of the convex hull.
+    """
+    points = np.array(list(zip(x,y)))
+    hull = ConvexHull(points)
+
+    x_vtx = points[hull.vertices, 0]
+    y_vtx = points[hull.vertices, 1]
+
+    cvxh_area = hull.volume
+
+    return x_vtx, y_vtx, cvxh_area
+
+#* prepare data for the cvx hull calc
+df_base['x_emb'] = embedding[:, 0]
+df_base['y_emb'] = embedding[:, 1]
+ids = df_base['ParticipantID'].unique()
+
+df_col = df_colors[['P','HEX-Win']].copy()
+df_base = df_base.merge(df_col, left_on='ParticipantID', right_on='P').copy()
+
+#* create base figure
+pio.renderers.default = "browser"
+
+#* first trace: Full Design space
+fullds_xvt, fullds_yvt, cvarea = cv_hull_vertices(x=df_base['x_emb'], y=df_base['y_emb'])
+
+
+fig = go.Figure()
+
+fig.update_layout(
+    autosize=False,
+    width=950,
+    height=800,
+    margin=dict(
+        l=25,
+        r=25,
+        b=25,
+        t=25,
+        pad=2
+    ),
+    paper_bgcolor="LightSteelBlue",)
+
+# all points
+fig.add_trace(go.Scatter(   x=embedding[:, 0],
+                            y=embedding[:, 1],
+                            mode='markers',
+                            marker=dict(
+                                size=5,
+                                color=df_base['HEX-Win']
+                            ),
+                            name='All Points'),
+                            )
+layout = go.Layout(
+    width=850,
+    height=800,
+    margin=dict(
+        l=25,
+        r=25,
+        b=25,
+        t=25,
+        pad=2
+    ),
+    showlegend=True
+)
+
+
+
+#%%
+# turn off native plotly.js hover effects - make sure to use
+# hoverinfo="none" rather than "skip" which also halts events.
+fig.update_traces(hoverinfo="none", hovertemplate=None)
+
+app = Dash(__name__)
+
+
+app.layout = html.Div([
+    dcc.Graph(id="graph-basic-2", figure=fig, clear_on_unhover=True),
+    dcc.Tooltip(id="graph-tooltip"),
+])
+
+@app.callback(
+    Output("graph-tooltip", "show"),
+    Output("graph-tooltip", "bbox"),
+    Output("graph-tooltip", "children"),
+    Input("graph-basic-2", "hoverData"),
+)
+
+
+def display_hover(hoverData):
+
+    if hoverData is None:
+        return False, no_update, no_update
+
+    # demo only shows the first point, but other points may also be available
+    pt = hoverData["points"][0]
+
+    if "pointNumber" in pt:
+        bbox = pt["bbox"]
+        num = pt["pointNumber"]
+
+        #! HERE
+
+        df_ptc_row = df_base.iloc[num]
+        img_src = df_ptc_row['videoPreview']
+        name = df_ptc_row['FullID']
+        form = df_ptc_row['result']
+        desc = f"$ {df_ptc_row['budgetUsed']:.1f} + Max Stress: {df_ptc_row['maxStress']:.1f}"
+        if len(desc) > 300:
+            desc = desc[:100] + '...'
+
+        children = [
+            html.Div([
+                html.Img(src=img_src, style={"width": "100%"}),
+                html.H2(f"{name}", style={"color": "darkblue", "overflow-wrap": "break-word"}),
+                html.P(f"{form}"),
+                html.P(f"{desc}"),
+            ], style={'width': '200px', 'white-space': 'normal'})
+        ]
+
+        return True, bbox, children
+    else:
+        return False, no_update, no_update
+
+if __name__ == "__main__":
+    app.run_server(debug=True, use_reloader=False)
