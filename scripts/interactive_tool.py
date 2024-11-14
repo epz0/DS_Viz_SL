@@ -395,7 +395,7 @@ app.layout = html.Div([ #! Div 1 - BG
         style={'width': '74%', 'display': 'inline-block'}),
 
     html.Div([ #! Div 3 - Reach Out
-        html.A('more info', href='https://doi.org/10.17863/CAM.105967', target='_blank'),
+        html.A('more info', href='https://doi.org/10.1017/pds.2024.106', target='_blank'),
         ' | ',
         html.A('github', href='https://github.com/epz0/DS_Viz', target='_blank'),
         ' | ',
