@@ -1,1 +1,1 @@
-web: gunicorn interactive_tool:server
+web: gunicorn scripts.interactive_tool:server
