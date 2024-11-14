@@ -6,14 +6,14 @@ Functions:
 
 from pathlib import Path
 import plotly.express as px
-from validation.validation_distmetric import *
-from utils.utils import *
-from design_space.read_data import *
-from design_space.dist_matrix import *
-from design_space.dim_reduction import *
-from design_space.design_space import *
-from design_space.dspace_metrics import *
-from design_space.dspace_dist_metrics import *
+from scripts.validation.validation_distmetric import *
+from scripts.utils.utils import *
+from scripts.design_space.read_data import *
+from scripts.design_space.dist_matrix import *
+from scripts.design_space.dim_reduction import *
+from scripts.design_space.design_space import *
+from scripts.design_space.dspace_metrics import *
+from scripts.design_space.dspace_dist_metrics import *
 
 
 

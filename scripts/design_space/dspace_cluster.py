@@ -12,14 +12,14 @@ from plotly.validators.scatter.marker import SymbolValidator
 
 
 from utils.utils import *
-from design_space.read_data import read_analysis
-from design_space.dist_matrix import *
-from design_space.dim_reduction import *
-from design_space.dspace_dist_metrics import *
-from design_space.design_space import *
-from design_space.dspace_metrics import *
-from design_space.dspace_metric_novelty import *
-from design_space.dspace_viz_density import *
+from scripts.design_space.read_data import read_analysis
+from scripts.design_space.dist_matrix import *
+from scripts.design_space.dim_reduction import *
+from scripts.design_space.dspace_dist_metrics import *
+from scripts.design_space.design_space import *
+from scripts.design_space.dspace_metrics import *
+from scripts.design_space.dspace_metric_novelty import *
+from scripts.design_space.dspace_viz_density import *
 
 #* --- initial definitions ------
 my_dir = Path(r'C:/Py/DS_Viz_Exp/data')                                                 # path to the data file

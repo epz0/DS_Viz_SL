@@ -2,10 +2,10 @@ from pathlib import Path
 import pandas as pd
 import numpy as np
 import seaborn as sns
-from design_space.read_data import read_analysis
-from design_space.dist_matrix import *
-from design_space.dim_reduction import *
-from design_space.dspace_viz_density import *
+from scripts.design_space.read_data import read_analysis
+from scripts.design_space.dist_matrix import *
+from scripts.design_space.dim_reduction import *
+from scripts.design_space.dspace_viz_density import *
 
 def novelty_from_neig(dir_data, df, embed, delta, save_df=False, save_plot=True, fn=None):
     """Returns list with novelty scores for each solution, givent a delta (radius).

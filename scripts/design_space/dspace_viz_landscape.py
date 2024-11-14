@@ -8,7 +8,7 @@ from matplotlib.colors import to_rgba, LinearSegmentedColormap, ListedColormap
 import matplotlib.colors as mcolors
 from matplotlib import cm
 from mpl_toolkits.mplot3d import Axes3D
-from design_space.dspace_viz_density import *
+from scripts.design_space.dspace_viz_density import *
 from scipy import stats, integrate
 
 def plot_landscape(dir_data, df, embed, mode='line', save_plot=True):

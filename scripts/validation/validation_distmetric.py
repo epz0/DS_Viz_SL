@@ -17,10 +17,10 @@ import pandas as pd
 import numpy as np
 import scipy as sp
 
-from design_space.read_data import read_analysis
-from design_space.dist_matrix import *
-from design_space.dim_reduction import *
-from design_space.design_space import *
+from scripts.design_space.read_data import read_analysis
+from scripts.design_space.dist_matrix import *
+from scripts.design_space.dim_reduction import *
+from scripts.design_space.design_space import *
 from sklearn.metrics import cohen_kappa_score, mean_squared_error
 from scipy.spatial import procrustes
 from itertools import combinations

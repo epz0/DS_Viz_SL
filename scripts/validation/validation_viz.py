@@ -16,11 +16,11 @@ import ast
 import pandas as pd
 import numpy as np
 
-from design_space.read_data import read_analysis
-from design_space.dist_matrix import *
-from design_space.dim_reduction import *
-from design_space.design_space import *
-from validation.validation_distmetric import *
+from scripts.design_space.read_data import read_analysis
+from scripts.design_space.dist_matrix import *
+from scripts.design_space.dim_reduction import *
+from scripts.design_space.design_space import *
+from scripts.validation.validation_distmetric import *
 
 def plot_spec_sols_difweights(dir_data, filenm, df, list_sols, df_colors, sheetgow=None, sheetjac=None, save_val=True):
     """PLots a list of solutions across the different metrics weights.

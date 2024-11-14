@@ -17,8 +17,8 @@ from scipy.spatial import ConvexHull
 from matplotlib.colors import to_rgba, LinearSegmentedColormap, ListedColormap
 import matplotlib.colors as mcolors
 import matplotlib.cm
-from design_space.dist_matrix import *
-from utils.utils import *
+from scripts.design_space.dist_matrix import *
+from scripts.utils.utils import *
 from scipy import stats, integrate
 
 
