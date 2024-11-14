@@ -179,7 +179,7 @@ df_base['Area-Perc-FS'] = df_base.apply(   lambda row: row['Area-Perc-FS'] if st
 # novelty from density plot
 df_kde, lim_x, lim_y = prep_density(df_base, embedding)
 
-df_novel = novelty_from_density(my_dir, df_kde, lim_x, lim_y)
+df_novel = novelty_from_density(my_dir, df_kde, lim_x, lim_y, prt_integral=False, save_metrics=False)
 df_novel = df_novel.drop(columns=['GroupID', 'ParticipantID', 'GroupID', 'PrePost',
                                     'result', 'type', 'x_emb', 'y_emb'])
 
