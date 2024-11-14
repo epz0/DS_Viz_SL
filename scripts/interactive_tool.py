@@ -27,16 +27,18 @@ from design_space.dspace_cluster import *
 from design_space.dspace_viz_landscape import *
 
 #* --- initial definitions ------
-my_dir = Path(r'C:/Py/DS_Viz_Exp/data')                                                 # path to the data file
+cwd = Path.cwd()
+my_dir = cwd.joinpath('data')                                                # path to the data file
 filenm = 'MASKED_DATA_analysis_v1.xlsx'                                                 # name of the data file
 sheetnm = 'ExpData-100R-Expanded'                                                       # sheet where the data (analysis) is
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
-save_dir = 'C:/Py/DSX_Vis/SaveFiles'
+save_dir = cwd.joinpath('data').joinpath('json')
 #* ------------------------------
 
 #%%
 #! get & process data
 
+print(cwd)
 #* reads Excel file with solutions' analysis
 df_base, df_colors, labels = read_analysis(my_dir, filenm, sheetname=sheetnm)
 
@@ -193,11 +195,11 @@ df_base = df_base.merge(novel_nn, how='left', on='FullID')
 #! cluster metrics
 df_base = get_clusters(df_base, graph)
 #%%
-symb = list(range(1,16))
+symb = list(range(1,17))
 symb_ls = ['circle', 'diamond', 'cross', 'x', 'pentagon',
             'hexagon', 'star',  'hexagram', 'star-triangle-up',
             'star-triangle-down','star-square', 'star-diamond', 'diamond-tall',
-            'diamond-wide','circle-open']
+            'diamond-wide','circle-open','square']
 
 df_symb = pd.DataFrame({'cluster_id': symb, 'clust_symb':symb_ls})
 df_base = df_base.merge(df_symb, how='left', on='cluster_id')

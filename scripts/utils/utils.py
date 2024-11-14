@@ -108,10 +108,10 @@ def solutions_summary(dir_data, saveExcel=True):
         #read file (layout json)
         df = pd.read_json(f'{sol[0]}/{sol[1]}.json')
 
-        df_Anchor=df.iloc[0,10]
-        df_Edge=df.iloc[1,10]
+        df_Anchor=df.iloc[1,10]
+        df_Edge=df.iloc[3,10]
         df_Joints=df.iloc[2,10]
-        df_Phase=df.iloc[3,10]
+        df_Phase=df.iloc[4,10]
 
         df_Anchor= pd.json_normalize(df_Anchor)
         df_Joints=pd.json_normalize(df_Joints)
