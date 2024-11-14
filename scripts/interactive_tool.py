@@ -386,6 +386,7 @@ for i, trace in enumerate(fig_PF['data']):
 print('here')
 #%% #!DASH LAYOUT
 app = Dash(__name__, external_stylesheets=external_stylesheets)
+server = app.server
 
 # app layout
 app.layout = html.Div([ #! Div 1 - BG
@@ -1167,7 +1168,6 @@ def update_main_graph(clickData_m, clickData_p, ckb_value, pt_selec, fig_state):
 
         return patched_figure
 
-server = app.server
 
 if __name__ == '__main__':
     app.run_server(debug=True, use_reloader=False)
