@@ -89,10 +89,10 @@ Plans:
   3. Vertical dashed line marks intervention point (pre/post boundary) for selected participant
   4. Clicking performance chart point highlights corresponding solution in scatter plot
   5. Both charts and detail panel stay synchronized regardless of which chart is clicked
-**Plans**: TBD
+**Plans**: 1 plan
 
 Plans:
-- [ ] TBD
+- [ ] 04-01-PLAN.md -- Performance chart with bidirectional click sync to scatter plot
 
 ### Phase 5: Full Feature Parity & Deployment
 **Goal**: Complete visualization matches all Dash app features and runs stably on Streamlit Cloud
@@ -121,5 +121,5 @@ Phases execute in numeric order: 0 -> 1 -> 2 -> 3 -> 4 -> 5
 | 1. Minimal Prototype | 1/1 | ✓ Complete | 2026-02-14 |
 | 2. Click Handling | 1/1 | ✓ Complete | 2026-02-14 |
 | 3. Filters & Toggles | 0/1 | Not started | - |
-| 4. Chart Sync | 0/TBD | Not started | - |
+| 4. Chart Sync | 0/1 | Not started | - |
 | 5. Full Feature Parity | 0/TBD | Not started | - |
