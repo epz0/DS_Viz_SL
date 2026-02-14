@@ -16,7 +16,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 1: Minimal Streamlit Prototype** - Basic app structure and deployment validation
 - [x] **Phase 2: Single-Chart Click Handling** - Interactive scatter plot with detail panel
 - [x] **Phase 3: Filtering & Visibility Controls** - Participant selection and element toggles
-- [ ] **Phase 4: Performance Chart & Cross-Chart Sync** - Dual-chart bidirectional interaction
+- [x] **Phase 4: Performance Chart & Cross-Chart Sync** - Dual-chart bidirectional interaction
 - [ ] **Phase 5: Full Feature Parity & Deployment** - Complete visualization with all metrics
 
 ## Phase Details
@@ -93,7 +93,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 04-01-PLAN.md -- Performance chart with bidirectional click sync to scatter plot
+- [x] 04-01-PLAN.md -- Performance chart with bidirectional click sync to scatter plot
 
 ### Phase 5: Full Feature Parity & Deployment
 **Goal**: Complete visualization matches all Dash app features and runs stably on Streamlit Cloud
@@ -123,5 +123,5 @@ Phases execute in numeric order: 0 -> 1 -> 2 -> 3 -> 4 -> 5
 | 1. Minimal Prototype | 1/1 | ✓ Complete | 2026-02-14 |
 | 2. Click Handling | 1/1 | ✓ Complete | 2026-02-14 |
 | 3. Filters & Toggles | 2/2 | ✓ Complete | 2026-02-14 |
-| 4. Chart Sync | 0/1 | Not started | - |
+| 4. Chart Sync | 1/1 | ✓ Complete | 2026-02-14 |
 | 5. Full Feature Parity | 0/2 | Not started | - |

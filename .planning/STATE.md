@@ -5,7 +5,7 @@
 See: .planning/PROJECT.md (updated 2026-02-14)
 
 **Core value:** Interactive scatter plot with click-to-inspect — clicking any point shows solution details, screenshot, and metrics, with performance chart syncing to selected participant.
-**Current focus:** Phase 2 - Single-Chart Click Handling
+**Current focus:** Phase 4 - Performance Chart & Cross-Chart Sync (complete)
 
 ## Current Position
 
@@ -14,7 +14,7 @@ Plan: 1 of 1 in current phase
 Status: Phase complete
 Last activity: 2026-02-14 — Phase 4 Plan 1 complete (performance chart with bidirectional click sync)
 
-Progress: [████████░░] 70%
+Progress: [████████░░] 80%
 
 ## Performance Metrics
 
