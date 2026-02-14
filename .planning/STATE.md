@@ -9,19 +9,19 @@ See: .planning/PROJECT.md (updated 2026-02-14)
 
 ## Current Position
 
-Phase: 3 of 5 (Filtering and Visibility Controls)
-Plan: 2 of 2 in current phase
+Phase: 4 of 5 (Performance Chart and Cross-Chart Sync)
+Plan: 1 of 1 in current phase
 Status: Phase complete
-Last activity: 2026-02-14 — Phase 3 Plan 2 complete (gap closure)
+Last activity: 2026-02-14 — Phase 4 Plan 1 complete (performance chart with bidirectional click sync)
 
-Progress: [████████░░] 60%
+Progress: [████████░░] 70%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 6
+- Total plans completed: 7
 - Average duration: 4 min
-- Total execution time: 0.53 hours
+- Total execution time: 0.58 hours
 
 **By Phase:**
 
@@ -31,10 +31,11 @@ Progress: [████████░░] 60%
 | 01 | 1 | 8 min | 8 min |
 | 02 | 1 | 2 min | 2 min |
 | 03 | 2 | 5 min | 2.5 min |
+| 04 | 1 | 3 min | 3 min |
 
 **Recent Trend:**
-- Last 5 plans: 8 min, 2 min, 3 min, 2 min
-- Trend: Accelerating (gap closure plans very efficient)
+- Last 5 plans: 2 min, 3 min, 2 min, 3 min
+- Trend: Stable (consistent 2-3 min execution)
 
 *Updated after each plan completion*
 
@@ -46,6 +47,7 @@ Progress: [████████░░] 60%
 | 02-01 | 2 min | 2 | 2 |
 | 03-01 | 3 min | 1 | 1 |
 | 03-02 | 2 min | 1 | 1 |
+| 04-01 | 3 min | 2 | 1 |
 
 ## Accumulated Context
 
@@ -76,6 +78,10 @@ Recent decisions affecting current work:
 - Scatter points always show all 563 solutions: Participant filter for Phase 5 arrows/areas only, not scatter points (03-02)
 - Removed show_points checkbox: Points are core feature, always visible (03-02)
 - Simplified click handling: Direct original_indices mapping, no filtered_to_original needed (03-02)
+- Use plotly_events for both charts: Native st.plotly_chart doesn't provide curveNumber needed for performance clicks (04-01)
+- Performance chart P_001-P_030 only: GALL has no performance trace, clicking GALL hides all traces (04-01)
+- Intervention line at pre/post boundary: Matches original Dash app, provides visual intervention point cue (04-01)
+- Selected marker size 14 in performance: Balanced visibility, proportional to scatter size 18 (04-01)
 
 ### Pending Todos
 
@@ -87,6 +93,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-14 (phase 3 execution)
-Stopped at: Completed 03-02-PLAN.md - Scatter plot always shows all solutions
+Last session: 2026-02-14 (phase 4 execution)
+Stopped at: Completed 04-01-PLAN.md - Performance chart with bidirectional click sync
 Resume file: None
