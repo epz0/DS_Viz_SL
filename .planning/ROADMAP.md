@@ -61,10 +61,10 @@ Plans:
   3. Detail panel shows solution metrics (ID, result, cost, stress, length, nodes, segments)
   4. Detail panel shows core attributes (solution type, deck, structure, rock support, materials)
   5. Solution screenshot loads from GitHub URL with graceful fallback if image fails
-**Plans**: TBD
+**Plans**: 1 plan
 
 Plans:
-- [ ] TBD
+- [ ] 02-01-PLAN.md -- Click handling with point highlighting and detail panel
 
 ### Phase 3: Filtering & Visibility Controls
 **Goal**: Users can filter by participant and toggle display elements independently
@@ -119,7 +119,7 @@ Phases execute in numeric order: 0 -> 1 -> 2 -> 3 -> 4 -> 5
 |-------|----------------|--------|-----------|
 | 0. Data Preparation | 2/2 | ✓ Complete | 2026-02-14 |
 | 1. Minimal Prototype | 1/1 | ✓ Complete | 2026-02-14 |
-| 2. Click Handling | 0/TBD | Not started | - |
+| 2. Click Handling | 0/1 | In Progress | - |
 | 3. Filters & Toggles | 0/TBD | Not started | - |
 | 4. Chart Sync | 0/TBD | Not started | - |
 | 5. Full Feature Parity | 0/TBD | Not started | - |
