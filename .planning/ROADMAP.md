@@ -46,10 +46,10 @@ Plans:
   3. Data loads from cached files in under 2 seconds using st.cache_data
   4. App deploys successfully to Streamlit Community Cloud within free tier limits
   5. Deployed dependencies are slim (only streamlit, plotly, pandas, numpy, shapely) ~150-200MB total
-**Plans**: TBD
+**Plans**: 1 plan
 
 Plans:
-- [ ] TBD
+- [ ] 01-01-PLAN.md -- Streamlit app with scatter plot, slim requirements, and deployment config
 
 ### Phase 2: Single-Chart Click Handling
 **Goal**: Clicking any scatter point shows that solution's complete details and screenshot
@@ -118,7 +118,7 @@ Phases execute in numeric order: 0 -> 1 -> 2 -> 3 -> 4 -> 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 0. Data Preparation | 2/2 | ✓ Complete | 2026-02-14 |
-| 1. Minimal Prototype | 0/TBD | Not started | - |
+| 1. Minimal Prototype | 0/1 | Planning complete | - |
 | 2. Click Handling | 0/TBD | Not started | - |
 | 3. Filters & Toggles | 0/TBD | Not started | - |
 | 4. Chart Sync | 0/TBD | Not started | - |
