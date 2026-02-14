@@ -45,12 +45,31 @@ def load_metadata():
         return json.load(f)
 
 
+@st.cache_data
+def load_convex_hulls():
+    """Load pre-computed convex hull vertices.
+
+    Returns:
+        dict: {
+            'full_ds': {'x': [...], 'y': [...], 'area': float},
+            'GALL': {'x': [...], 'y': [...], 'area': float},
+            'P_001': {'x': [...], 'y': [...], 'area': float},
+            ...
+            'P_030': {'x': [...], 'y': [...], 'area': float}
+        }
+    """
+    import pickle
+    with open(DATA_DIR / 'convex_hulls.pkl', 'rb') as f:
+        return pickle.load(f)
+
+
 # Main app
 st.title("Design Space Visualization")
 
 # Load data (cached, runs once)
 df = load_solutions()
 metadata = load_metadata()
+hulls = load_convex_hulls()
 
 # Initialize session state for click handling
 if 'selected_point_idx' not in st.session_state:
@@ -82,21 +101,26 @@ with st.sidebar:
     show_arrows = st.checkbox(
         "Arrows",
         value=True,
-        help="Exploration sequence arrows (coming in Phase 5)",
-        key='show_arrows',
-        disabled=True  # Not implemented until Phase 5
+        help="Show exploration sequence arrows per participant",
+        key='show_arrows'
     )
     show_areas = st.checkbox(
         "Areas",
         value=True,
-        help="Convex hull areas (coming in Phase 5)",
-        key='show_areas',
-        disabled=True  # Not implemented until Phase 5
+        help="Show convex hull areas per participant",
+        key='show_areas'
     )
 
 # Filter data by selected participants
 # df_filtered will be used for arrows/areas in Phase 5, NOT for scatter points
 df_filtered = df[df['OriginalID_PT'].isin(selected_participants)]
+
+# Helper function to convert hex colors to RGBA with alpha
+def hex_to_rgba(hex_color, alpha):
+    """Convert #RRGGBB to rgba(R, G, B, alpha)"""
+    h = hex_color.lstrip('#')
+    r, g, b = int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16)
+    return f'rgba({r}, {g}, {b}, {alpha})'
 
 # Create scatter plot using plotly.graph_objects
 # The original Dash app uses go.Scatter with per-point color/symbol arrays.
@@ -134,8 +158,61 @@ original_indices = df.index.tolist()
 
 fig = go.Figure()
 
-# Always render scatter trace with all 563 solutions
-# Participant filter only affects arrows/areas (Phase 5), not scatter points
+# Trace order matters for layering: hulls -> arrows -> scatter points
+# Trace indices: 0=full_ds, 1-31=participant hulls, 32-61=arrows, 62=scatter
+
+# Trace 0: Full design space convex hull (background)
+hull_x = hulls['full_ds']['x'] + [hulls['full_ds']['x'][0]]  # Close polygon
+hull_y = hulls['full_ds']['y'] + [hulls['full_ds']['y'][0]]
+fig.add_trace(go.Scatter(
+    x=hull_x, y=hull_y,
+    mode='lines', fill='toself',
+    fillcolor='rgba(240,240,240,0.5)',
+    line=dict(color='rgba(240,240,240,0.5)', width=0),
+    hoverinfo='skip', name='full_ds_hull', showlegend=False,
+))
+
+# Traces 1-31: Per-participant convex hulls (GALL, P_001-P_030)
+for pt_id in metadata['participant_ids']:
+    hull_data = hulls[pt_id]
+    color = metadata['color_mapping'][pt_id]
+
+    # Participant hulls are ALREADY closed in convex_hulls.pkl
+    # Do NOT append first point again
+    fig.add_trace(go.Scatter(
+        x=hull_data['x'],
+        y=hull_data['y'],
+        mode='lines', fill='toself',
+        fillcolor=hex_to_rgba(color, 0.1),
+        line=dict(color=hex_to_rgba(color, 0.3), width=1),
+        hoverinfo='skip', name=f'{pt_id}_hull', showlegend=False,
+    ))
+
+# Traces 32-61: Per-participant arrow sequences (P_001-P_030 only, no GALL)
+for pt_id in metadata['participant_ids'][1:31]:
+    # Filter df (full df, not df_filtered) by OriginalID_PT, sort by OriginalID_Sol
+    pt_data = df[df['OriginalID_PT'] == pt_id].sort_values(by='OriginalID_Sol')
+    x_vals = pt_data['x_emb'].tolist()
+    y_vals = pt_data['y_emb'].tolist()
+    color = metadata['color_mapping'][pt_id]
+    arrow_color = hex_to_rgba(color, 0.5)
+
+    fig.add_trace(go.Scatter(
+        x=x_vals,
+        y=y_vals,
+        mode='lines+markers',
+        line=dict(color=arrow_color, width=1),
+        marker=dict(
+            symbol='arrow-up',
+            size=8,
+            angleref='previous',
+            color=arrow_color
+        ),
+        hoverinfo='skip', name=f'{pt_id}_arrows', showlegend=False,
+    ))
+
+# Trace 62: Scatter points (all 563 solutions)
+# Participant filter only affects arrows/areas, not scatter points
 fig.add_trace(go.Scatter(
     x=df['x_emb'],
     y=df['y_emb'],
@@ -165,6 +242,23 @@ fig.update_layout(
     plot_bgcolor='white',
     paper_bgcolor='rgba(0,0,0,0)',
 )
+
+# Apply visibility logic based on filters and display toggles
+# Trace indices: 0=full_ds, 1-31=participant hulls, 32-61=arrows, 62=scatter
+
+# Full DS hull (trace 0): visible if Areas enabled
+fig.data[0].visible = show_areas
+
+# Per-participant hulls (traces 1-31)
+for i, pt_id in enumerate(metadata['participant_ids'], start=1):
+    fig.data[i].visible = show_areas and (pt_id in selected_participants)
+
+# Arrow sequences (traces 32-61, P_001-P_030 only)
+for i, pt_id in enumerate(metadata['participant_ids'][1:31], start=32):
+    fig.data[i].visible = show_arrows and (pt_id in selected_participants)
+
+# Scatter points (trace 62): always visible (Points checkbox removed in Phase 3)
+fig.data[62].visible = True
 
 # Build performance chart (fig_perf) following original Dash app pattern
 fig_perf = go.Figure()
