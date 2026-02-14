@@ -130,7 +130,44 @@ with col_detail:
     if st.session_state.selected_point_idx is not None:
         idx = st.session_state.selected_point_idx
         row = df.iloc[idx]
+
+        # Section 1: Participant info (DETL-01)
+        st.markdown(f"**Participant:** {row['OriginalID_PT']} | **Group:** {row['OriginalID_Group']} | **Phase:** {row['OriginalID_PrePost']} intervention")
+
+        # Section 2: Solution header (DETL-02)
         st.subheader(f"Solution {row['OriginalID_Sol']}")
-        st.caption(f"Click a different point to update")
+
+        # Section 3: Result, Cost, Max Stress (DETL-03)
+        cost_str = f"${row['budgetUsed']:,}" if isinstance(row['budgetUsed'], (int, float)) else str(row['budgetUsed'])
+        stress_str = f"{row['maxStress']:.1f}%" if isinstance(row['maxStress'], (int, float)) else str(row['maxStress'])
+        st.markdown(f"**Result:** {row['result']} | **Cost:** {cost_str} | **Max Stress:** {stress_str}")
+
+        # Section 4: Length, Nodes, Segments (DETL-04)
+        # NOTE: Original Dash app maps NSegm->nodes and NJoint->segments (counterintuitive but must match)
+        try:
+            tlength = f"{float(row['TLength']):.1f}"
+        except (ValueError, TypeError):
+            tlength = str(row['TLength'])
+        st.markdown(f"**Length:** {tlength}m | **Nodes:** {row['NSegm']} | **Segments:** {row['NJoint']}")
+
+        # Section 5: Core Attributes (DETL-05)
+        st.divider()
+        st.markdown("##### Core Attributes")
+        st.markdown(f"**Solution:** {row['ca_sol']}")
+        st.markdown(f"**Deck:** {row['ca_deck']}")
+        st.markdown(f"**Structure:** {row['ca_str']}")
+        st.markdown(f"**Rock Support:** {row['ca_rck']}")
+        st.markdown(f"**Materials:** {row['ca_mtr']}")
+
+        # Section 6: Screenshot (DETL-06)
+        st.divider()
+        image_url = row['videoPreview']
+        if image_url and str(image_url) != '-' and str(image_url) != 'nan':
+            try:
+                st.image(image_url, caption=f"Solution {row['OriginalID_Sol']}", use_container_width=True)
+            except Exception:
+                st.warning("Screenshot unavailable")
+        else:
+            st.info("No screenshot available for this solution")
     else:
         st.info("Click a point on the scatter plot to view solution details")
