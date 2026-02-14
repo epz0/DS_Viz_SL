@@ -1,0 +1,18 @@
+{
+  "timestamp": "2026-02-14T12:58:56.960121Z",
+  "source_file": "MASKED_DATA_analysis_v2.xlsx",
+  "source_sheet": "ExpData-100R-Expanded",
+  "umap_params": {
+    "NN": 115,
+    "MD": 0.15,
+    "densm": 2
+  },
+  "cluster_resolution": 0.05,
+  "novelty_delta": 0.9,
+  "output_files": [
+    "df_base.parquet",
+    "metadata.json",
+    "convex_hulls.pkl",
+    "manifest.json"
+  ]
+}

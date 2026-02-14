@@ -5,3 +5,6 @@
 # Additional pipeline dependencies not needed in production
 # (most are already in requirements.txt from the Dash app era,
 #  but listing explicitly for clarity)
+
+# Parquet support (for df_base.parquet output)
+pyarrow>=23.0.0

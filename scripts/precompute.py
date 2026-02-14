@@ -669,16 +669,40 @@ def step_save_final(df_base=None, force=False):
     logger.info("Step save_final: Saving final dataframe")
     # Try parquet first, fall back to pickle if there are type issues
     try:
-        # Convert any list/dict columns to JSON strings for parquet compatibility
+        # Convert any list/dict/array columns to JSON strings for parquet compatibility
         df_save = df_base.copy()
         for col in df_save.columns:
             if df_save[col].dtype == 'object':
-                # Check if column contains lists or dicts
-                sample = df_save[col].dropna().head(1)
-                if len(sample) > 0:
-                    val = sample.iloc[0]
-                    if isinstance(val, (list, dict)):
-                        df_save[col] = df_save[col].apply(lambda x: json.dumps(x) if pd.notna(x) else None)
+                # Check if column contains lists, dicts, or numpy arrays
+                try:
+                    # Try to detect if any value is a list/dict/array
+                    has_complex_type = False
+                    for val in df_save[col].dropna().head(5):
+                        if isinstance(val, (list, dict, np.ndarray)):
+                            has_complex_type = True
+                            break
+
+                    if has_complex_type:
+                        def convert_to_json(x):
+                            if pd.isna(x):
+                                return None
+                            elif isinstance(x, np.ndarray):
+                                return json.dumps(x.tolist())
+                            elif isinstance(x, (list, dict)):
+                                return json.dumps(x)
+                            else:
+                                return x
+
+                        df_save[col] = df_save[col].apply(convert_to_json)
+                    else:
+                        # Convert to string to handle mixed types (numbers and strings)
+                        df_save[col] = df_save[col].astype(str)
+                except Exception:
+                    # If we can't check, convert to string as fallback
+                    try:
+                        df_save[col] = df_save[col].astype(str)
+                    except:
+                        pass
 
         df_save.to_parquet(output_parquet, index=False)
         logger.info(f"Saved to {output_parquet}")
