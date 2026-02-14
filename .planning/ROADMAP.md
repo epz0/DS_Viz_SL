@@ -105,10 +105,11 @@ Plans:
   4. All creativity metrics display in detail panel (area, distance, clusters: total/pre/post)
   5. Novelty metrics (neighbors, density) and performance metric display in detail panel
   6. App runs stably on Streamlit Community Cloud within resource limits (< 800MB memory usage)
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] TBD
+- [ ] 05-01-PLAN.md -- Add convex hulls, exploration arrows, visibility controls, and all metrics to detail panel
+- [ ] 05-02-PLAN.md -- Deploy to Streamlit Community Cloud and verify stability
 
 ## Progress
 
@@ -122,4 +123,4 @@ Phases execute in numeric order: 0 -> 1 -> 2 -> 3 -> 4 -> 5
 | 2. Click Handling | 1/1 | ✓ Complete | 2026-02-14 |
 | 3. Filters & Toggles | 1/1 | ✓ Complete | 2026-02-14 |
 | 4. Chart Sync | 0/1 | Not started | - |
-| 5. Full Feature Parity | 0/TBD | Not started | - |
+| 5. Full Feature Parity | 0/2 | Not started | - |
