@@ -7,7 +7,6 @@ import pandas as pd
 import plotly.graph_objects as go
 import json
 from pathlib import Path
-from streamlit_plotly_events import plotly_events
 
 # MUST be first Streamlit command
 st.set_page_config(
@@ -111,17 +110,17 @@ fig.update_layout(
 col_chart, col_detail = st.columns([2, 1])
 
 with col_chart:
-    selected_points = plotly_events(
+    event = st.plotly_chart(
         fig,
-        click_event=True,
-        select_event=False,
-        hover_event=False,
-        override_height=700,
-        override_width="100%",
+        use_container_width=True,
+        on_select="rerun",
+        selection_mode=["points"],
+        key="scatter",
     )
 
-    if selected_points:
-        clicked_idx = selected_points[0]['pointIndex']
+    # Handle click/selection events from native Streamlit API
+    if event and event.selection and event.selection.point_indices:
+        clicked_idx = event.selection.point_indices[0]
         if clicked_idx != st.session_state.selected_point_idx:
             st.session_state.selected_point_idx = clicked_idx
             st.rerun()
@@ -135,7 +134,8 @@ with col_detail:
         st.markdown(f"**Participant:** {row['OriginalID_PT']} | **Group:** {row['OriginalID_Group']} | **Phase:** {row['OriginalID_PrePost']} intervention")
 
         # Section 2: Solution header (DETL-02)
-        st.subheader(f"Solution {row['OriginalID_Sol']}")
+        sol_num = int(row['OriginalID_Sol']) if isinstance(row['OriginalID_Sol'], float) else row['OriginalID_Sol']
+        st.subheader(f"Solution {sol_num}")
 
         # Section 3: Result, Cost, Max Stress (DETL-03)
         cost_str = f"${row['budgetUsed']:,}" if isinstance(row['budgetUsed'], (int, float)) else str(row['budgetUsed'])
