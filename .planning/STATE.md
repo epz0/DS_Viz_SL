@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-02-14)
 ## Current Position
 
 Phase: 2 of 5 (Single-Chart Click Handling)
-Plan: 0 of TBD in current phase
-Status: Ready to plan
-Last activity: 2026-02-14 — Phase 1 verified and complete
+Plan: 1 of 1 in current phase
+Status: Phase complete
+Last activity: 2026-02-14 — Phase 2 Plan 1 complete
 
-Progress: [███░░░░░░░] 33%
+Progress: [████░░░░░░] 40%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 3
-- Average duration: 7 min
-- Total execution time: 0.33 hours
+- Total plans completed: 4
+- Average duration: 6 min
+- Total execution time: 0.37 hours
 
 **By Phase:**
 
@@ -29,10 +29,11 @@ Progress: [███░░░░░░░] 33%
 |-------|-------|-------|----------|
 | 00 | 2 | 12 min | 6 min |
 | 01 | 1 | 8 min | 8 min |
+| 02 | 1 | 2 min | 2 min |
 
 **Recent Trend:**
-- Last 5 plans: 5 min, 7 min, 8 min
-- Trend: Consistent execution
+- Last 5 plans: 5 min, 7 min, 8 min, 2 min
+- Trend: Improving efficiency
 
 *Updated after each plan completion*
 
@@ -41,6 +42,7 @@ Progress: [███░░░░░░░] 33%
 | 00-01 | 5 min | 1 | 3 |
 | 00-02 | 7 min | 3 | 4 |
 | 01-01 | 8 min | 3 | 5 |
+| 02-01 | 2 min | 2 | 2 |
 
 ## Accumulated Context
 
@@ -63,6 +65,9 @@ Recent decisions affecting current work:
 - go.Scatter with per-point arrays (not px.scatter): Matches original Dash app, avoids 31-entry legend (01-01)
 - scaleanchor + fixed height for 1:1 ratio: use_container_width=False prevents aspect distortion (01-01)
 - Replaced old Dash requirements.txt with 5-package slim file: Heavy deps moved to requirements-dev.txt (01-01)
+- st.rerun() after selection change: Ensures figure rebuilds with updated marker arrays (02-01)
+- NSegm->nodes, NJoint->segments mapping: Matches original Dash app counterintuitive mapping (02-01)
+- Size 18 for selected, size 8 for unselected: Balance between visibility and clickability (02-01)
 
 ### Pending Todos
 
@@ -74,6 +79,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-14 (phase 1 execution)
-Stopped at: Phase 1 complete, verified, ready to plan Phase 2
+Last session: 2026-02-14 (phase 2 execution)
+Stopped at: Completed 02-01-PLAN.md - Single-chart click handling with detail panel
 Resume file: None
