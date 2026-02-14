@@ -292,7 +292,7 @@ with col_charts:
         key="perf_chart"
     )
 
-    # Handle scatter click events
+    # Handle click events from both charts (bidirectional synchronization)
     if scatter_clicks:
         clicked_idx = scatter_clicks[0]['pointIndex']
         if clicked_idx != st.session_state.selected_point_idx:
@@ -300,6 +300,27 @@ with col_charts:
             st.session_state.selected_participant = df.iloc[clicked_idx]['OriginalID_PT']
             st.session_state.last_clicked_chart = 'scatter'
             st.rerun()
+
+    elif perf_clicks:
+        curve_num = perf_clicks[0]['curveNumber']
+        point_x = perf_clicks[0]['x']
+
+        # Map curveNumber (0-29) to participant ID
+        # Performance chart has 30 traces for P_001-P_030 (GALL excluded)
+        participant_ids = metadata['participant_ids'][1:31]
+        clicked_participant = participant_ids[curve_num]
+
+        # Find the corresponding row in df
+        # point_x is the 1-based solution number (x-axis value)
+        match = df[(df['OriginalID_PT'] == clicked_participant) &
+                   (df['OriginalID_Sol'] == point_x)]
+        if len(match) > 0:
+            solution_idx = match.index[0]
+            if solution_idx != st.session_state.selected_point_idx:
+                st.session_state.selected_point_idx = solution_idx
+                st.session_state.selected_participant = clicked_participant
+                st.session_state.last_clicked_chart = 'performance'
+                st.rerun()
 
     # Status caption showing total solutions
     st.caption(f"Showing {len(df):,} solutions from {len(all_participants)} participants")
