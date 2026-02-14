@@ -12,7 +12,7 @@ This roadmap transforms a 1175-line Dash application into a Streamlit Community 
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 0: Data Preparation & Pre-Computation** - Establish pre-computed data pipeline
+- [x] **Phase 0: Data Preparation & Pre-Computation** - Establish pre-computed data pipeline
 - [ ] **Phase 1: Minimal Streamlit Prototype** - Basic app structure and deployment validation
 - [ ] **Phase 2: Single-Chart Click Handling** - Interactive scatter plot with detail panel
 - [ ] **Phase 3: Filtering & Visibility Controls** - Participant selection and element toggles
@@ -33,8 +33,8 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans**: 2 plans
 
 Plans:
-- [ ] 00-01-PLAN.md -- Build precompute.py pipeline script with all computation steps
-- [ ] 00-02-PLAN.md -- Validation, requirements-dev.txt, and end-to-end pipeline run
+- [x] 00-01-PLAN.md -- Build precompute.py pipeline script with all computation steps
+- [x] 00-02-PLAN.md -- Validation, requirements-dev.txt, and end-to-end pipeline run
 
 ### Phase 1: Minimal Streamlit Prototype
 **Goal**: Basic Streamlit app deploys to Community Cloud and loads pre-computed data efficiently
@@ -117,7 +117,7 @@ Phases execute in numeric order: 0 -> 1 -> 2 -> 3 -> 4 -> 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 0. Data Preparation | 0/2 | Planning complete | - |
+| 0. Data Preparation | 2/2 | ✓ Complete | 2026-02-14 |
 | 1. Minimal Prototype | 0/TBD | Not started | - |
 | 2. Click Handling | 0/TBD | Not started | - |
 | 3. Filters & Toggles | 0/TBD | Not started | - |
