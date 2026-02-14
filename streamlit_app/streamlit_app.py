@@ -82,11 +82,12 @@ fig.update_layout(
     showlegend=False,
     hovermode='closest',
     xaxis=dict(title='UMAP Dimension 1'),
-    yaxis=dict(title='UMAP Dimension 2'),
+    yaxis=dict(title='UMAP Dimension 2', scaleanchor='x', scaleratio=1),
+    height=700,
     margin=dict(l=40, r=40, b=40, t=40, pad=2),
     plot_bgcolor='white',
     paper_bgcolor='rgba(0,0,0,0)',
 )
 
-# Display the chart
-st.plotly_chart(fig, use_container_width=True)
+# Display the chart — fixed height keeps 1:1 ratio from looking stretched
+st.plotly_chart(fig, use_container_width=False)
