@@ -246,20 +246,23 @@ if st.session_state.selected_participant is not None:
 
             # Highlight selected solution marker if a point is selected
             if st.session_state.selected_point_idx is not None:
-                sol_num = df.iloc[st.session_state.selected_point_idx]['OriginalID_Sol']
-                sol_index = int(sol_num - 1)  # Convert to 0-based
+                sol_num = int(df.iloc[st.session_state.selected_point_idx]['OriginalID_Sol'])
+                sol_index = sol_num - 1  # Convert to 0-based
 
                 # Get participant data for marker array sizing
                 pt_data = df[df['OriginalID_PT'] == selected_pt].sort_values(by='OriginalID_Sol')
                 num_solutions = len(pt_data)
 
                 # Build per-point marker arrays
+                orig_symbols = list(fig_perf.data[selected_trace_idx].marker.symbol)
                 marker_sizes = [14 if i == sol_index else 8 for i in range(num_solutions)]
                 marker_line_widths = [2 if i == sol_index else 0 for i in range(num_solutions)]
+                marker_symbols = ['square-x-open' if i == sol_index else orig_symbols[i] for i in range(num_solutions)]
 
                 # Apply to selected trace
                 fig_perf.data[selected_trace_idx].marker.size = marker_sizes
                 fig_perf.data[selected_trace_idx].marker.line.width = marker_line_widths
+                fig_perf.data[selected_trace_idx].marker.symbol = marker_symbols
         except (ValueError, IndexError):
             # Participant not in performance chart (shouldn't happen with P_001-P_030)
             pass
@@ -268,54 +271,49 @@ if st.session_state.selected_participant is not None:
 col_charts, col_detail = st.columns([2, 1])
 
 with col_charts:
-    # Scatter plot
-    scatter_clicks = plotly_events(
+    # Scatter plot — use native st.plotly_chart (renders correctly with use_container_width)
+    scatter_event = st.plotly_chart(
         fig,
-        click_event=True,
-        select_event=False,
-        hover_event=False,
-        override_height=700,
-        override_width="100%",
-        key="scatter_chart"
+        use_container_width=True,
+        on_select="rerun",
+        selection_mode=["points"],
+        key="scatter",
     )
 
-    st.write("")  # Spacer
-
-    # Performance chart
-    perf_clicks = plotly_events(
-        fig_perf,
-        click_event=True,
-        select_event=False,
-        hover_event=False,
-        override_height=300,
-        override_width="100%",
-        key="perf_chart"
-    )
-
-    # Handle click events from both charts (bidirectional synchronization)
-    if scatter_clicks:
-        clicked_idx = scatter_clicks[0]['pointIndex']
+    # Handle scatter click via native Streamlit selection API
+    if scatter_event and scatter_event.selection and scatter_event.selection.point_indices:
+        clicked_idx = scatter_event.selection.point_indices[0]
         if clicked_idx != st.session_state.selected_point_idx:
             st.session_state.selected_point_idx = clicked_idx
             st.session_state.selected_participant = df.iloc[clicked_idx]['OriginalID_PT']
             st.session_state.last_clicked_chart = 'scatter'
             st.rerun()
 
-    elif perf_clicks:
+    # Performance chart — use plotly_events (need curveNumber for trace identification)
+    perf_clicks = plotly_events(
+        fig_perf,
+        click_event=True,
+        select_event=False,
+        hover_event=False,
+        override_height=300,
+        key="perf_chart"
+    )
+
+    # Handle performance chart click
+    if perf_clicks:
         curve_num = perf_clicks[0]['curveNumber']
         point_x = perf_clicks[0]['x']
 
         # Map curveNumber (0-29) to participant ID
-        # Performance chart has 30 traces for P_001-P_030 (GALL excluded)
-        participant_ids = metadata['participant_ids'][1:31]
-        clicked_participant = participant_ids[curve_num]
+        perf_participant_ids = metadata['participant_ids'][1:31]
+        clicked_participant = perf_participant_ids[curve_num]
 
         # Find the corresponding row in df
-        # point_x is the 1-based solution number (x-axis value)
-        match = df[(df['OriginalID_PT'] == clicked_participant) &
-                   (df['OriginalID_Sol'] == point_x)]
-        if len(match) > 0:
-            solution_idx = match.index[0]
+        # point_x is the 1-based position in sorted participant solutions
+        pt_sorted = df[df['OriginalID_PT'] == clicked_participant].sort_values(by='OriginalID_Sol')
+        pos = int(point_x) - 1  # Convert to 0-based
+        if 0 <= pos < len(pt_sorted):
+            solution_idx = pt_sorted.index[pos]
             if solution_idx != st.session_state.selected_point_idx:
                 st.session_state.selected_point_idx = solution_idx
                 st.session_state.selected_participant = clicked_participant
