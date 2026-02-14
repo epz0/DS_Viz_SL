@@ -67,17 +67,18 @@ Plans:
 - [x] 02-01-PLAN.md -- Click handling with point highlighting and detail panel
 
 ### Phase 3: Filtering & Visibility Controls
-**Goal**: Users can filter by participant and toggle display elements independently
+**Goal**: Scatter plot always shows all solutions; participant filter prepared for Phase 5 arrows/areas
 **Depends on**: Phase 2
 **Requirements**: FILT-01, FILT-02, FILT-03
 **Success Criteria** (what must be TRUE):
-  1. Participant multi-select dropdown filters scatter plot to show only selected participants
-  2. Checkboxes independently toggle visibility of Points, Arrows, and Areas
-  3. Filters and toggles work together (e.g., showing only Areas for specific participants updates correctly)
-**Plans**: 1 plan
+  1. Scatter plot displays all 563 solutions regardless of participant filter selection
+  2. Participant filter dropdown exists but has no effect until Phase 5 (arrows/areas)
+  3. Clicking any scatter point works correctly and shows proper solution details
+**Plans**: 2 plans
 
 Plans:
 - [x] 03-01-PLAN.md -- Sidebar controls with participant filter and visibility toggles
+- [ ] 03-02-PLAN.md -- Fix scatter trace to always use full df (gap closure from UAT)
 
 ### Phase 4: Performance Chart & Cross-Chart Sync
 **Goal**: Performance chart and scatter plot synchronize bidirectionally when user clicks either chart
@@ -121,6 +122,6 @@ Phases execute in numeric order: 0 -> 1 -> 2 -> 3 -> 4 -> 5
 | 0. Data Preparation | 2/2 | ✓ Complete | 2026-02-14 |
 | 1. Minimal Prototype | 1/1 | ✓ Complete | 2026-02-14 |
 | 2. Click Handling | 1/1 | ✓ Complete | 2026-02-14 |
-| 3. Filters & Toggles | 1/1 | ✓ Complete | 2026-02-14 |
+| 3. Filters & Toggles | 1/2 | In Progress | - |
 | 4. Chart Sync | 0/1 | Not started | - |
 | 5. Full Feature Parity | 0/2 | Not started | - |
