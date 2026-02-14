@@ -142,7 +142,7 @@ Deferred to future release. Tracked but not in current roadmap.
 | DEPL-01 | Phase 1 | Pending |
 | DEPL-02 | Phase 1 | Pending |
 | DEPL-03 | Phase 1 | Pending |
-| DEPL-04 | Phase 6 | Pending |
+| DEPL-04 | Phase 5 | Pending |
 | DEPL-05 | Phase 1 | Pending |
 | ORGN-01 | Phase 1 | Pending |
 | ORGN-02 | Phase 0 | Pending |
@@ -155,4 +155,4 @@ Deferred to future release. Tracked but not in current roadmap.
 
 ---
 *Requirements defined: 2026-02-14*
-*Last updated: 2026-02-14 after initial definition*
+*Last updated: 2026-02-14 after roadmap creation*
