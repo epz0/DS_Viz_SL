@@ -74,12 +74,6 @@ with st.sidebar:
     st.header("Display")
 
     # Element visibility toggles
-    show_points = st.checkbox(
-        "Points",
-        value=True,
-        help="Show/hide solution scatter points",
-        key='show_points'
-    )
     show_arrows = st.checkbox(
         "Arrows",
         value=True,
@@ -96,17 +90,8 @@ with st.sidebar:
     )
 
 # Filter data by selected participants
+# df_filtered will be used for arrows/areas in Phase 5, NOT for scatter points
 df_filtered = df[df['OriginalID_PT'].isin(selected_participants)]
-
-# Handle empty filter state
-if df_filtered.empty:
-    st.warning("No data matches current filters. Select at least one participant.")
-    st.stop()  # Halt execution -- no chart or detail panel to show
-
-# Clear selection when filtering removes the selected point
-if st.session_state.selected_point_idx is not None:
-    if st.session_state.selected_point_idx not in df_filtered.index:
-        st.session_state.selected_point_idx = None
 
 # Create scatter plot using plotly.graph_objects
 # The original Dash app uses go.Scatter with per-point color/symbol arrays.
@@ -119,7 +104,7 @@ if st.session_state.selected_point_idx is not None:
 # Build per-point marker arrays based on selection state
 # Selected point gets dramatic visual treatment: size 18, square-x-open, black border
 # Unselected points: size 8, original symbols, no border
-# After filtering, iterate over df_filtered rows (which preserves original index)
+# Iterate over full df (always show all 563 solutions)
 selected_idx = st.session_state.selected_point_idx
 
 marker_sizes = []
@@ -127,7 +112,7 @@ marker_symbols = []
 marker_line_widths = []
 marker_line_colors = []
 
-for orig_idx, row in df_filtered.iterrows():
+for orig_idx, row in df.iterrows():
     if orig_idx == selected_idx:
         marker_sizes.append(18)
         marker_symbols.append('square-x-open')
@@ -139,34 +124,30 @@ for orig_idx, row in df_filtered.iterrows():
         marker_line_widths.append(0)
         marker_line_colors.append(row['HEX-Win'])
 
-# Store mapping from filtered position to original DataFrame index
-# (needed for click handling even when points are hidden)
-filtered_to_original = df_filtered.index.tolist()
+# Store original DataFrame indices for click handling
+original_indices = df.index.tolist()
 
 fig = go.Figure()
 
-# Conditionally render scatter trace based on show_points checkbox
-if show_points:
-    fig.add_trace(go.Scatter(
-        x=df_filtered['x_emb'],
-        y=df_filtered['y_emb'],
-        mode='markers',
-        hovertemplate=df_filtered['hovertxt'].tolist(),
-        marker=dict(
-            size=marker_sizes,
-            color=df_filtered['HEX-Win'].tolist(),
-            symbol=marker_symbols,
-            line=dict(
-                width=marker_line_widths,
-                color=marker_line_colors
-            ),
+# Always render scatter trace with all 563 solutions
+# Participant filter only affects arrows/areas (Phase 5), not scatter points
+fig.add_trace(go.Scatter(
+    x=df['x_emb'],
+    y=df['y_emb'],
+    mode='markers',
+    hovertemplate=df['hovertxt'].tolist(),
+    marker=dict(
+        size=marker_sizes,
+        color=df['HEX-Win'].tolist(),
+        symbol=marker_symbols,
+        line=dict(
+            width=marker_line_widths,
+            color=marker_line_colors
         ),
-        customdata=filtered_to_original,  # Original DataFrame integer index for click mapping
-        name='',
-    ))
-else:
-    # Show info message when points are hidden
-    st.info("No elements visible. Enable Points in the sidebar.")
+    ),
+    customdata=original_indices,  # Original DataFrame integer index for click mapping
+    name='',
+))
 
 # Update layout
 fig.update_layout(
@@ -193,20 +174,17 @@ with col_chart:
     )
 
     # Handle click/selection events from native Streamlit API
-    # pointIndex is position in filtered trace, map to original DataFrame index
-    if show_points and event and event.selection and event.selection.point_indices:
-        clicked_filtered_pos = event.selection.point_indices[0]
-        # Map filtered position to original DataFrame index
-        clicked_original_idx = filtered_to_original[clicked_filtered_pos]
+    # pointIndex is position in trace, map to original DataFrame index
+    if event and event.selection and event.selection.point_indices:
+        clicked_pos = event.selection.point_indices[0]
+        # Map trace position to original DataFrame index
+        clicked_original_idx = original_indices[clicked_pos]
         if clicked_original_idx != st.session_state.selected_point_idx:
             st.session_state.selected_point_idx = clicked_original_idx
             st.rerun()
 
-    # Status caption showing filter state
-    st.caption(
-        f"Showing {len(df_filtered):,} of {len(df):,} solutions "
-        f"from {len(selected_participants)} of {len(all_participants)} participants"
-    )
+    # Status caption showing total solutions
+    st.caption(f"Showing {len(df):,} solutions from {len(all_participants)} participants")
 
 with col_detail:
     if st.session_state.selected_point_idx is not None:
