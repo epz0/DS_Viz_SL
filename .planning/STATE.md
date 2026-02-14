@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-02-14)
 ## Current Position
 
 Phase: 3 of 5 (Filtering and Visibility Controls)
-Plan: 1 of 1 in current phase
+Plan: 2 of 2 in current phase
 Status: Phase complete
-Last activity: 2026-02-14 — Phase 3 Plan 1 complete
+Last activity: 2026-02-14 — Phase 3 Plan 2 complete (gap closure)
 
 Progress: [████████░░] 60%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 5
-- Average duration: 5 min
-- Total execution time: 0.50 hours
+- Total plans completed: 6
+- Average duration: 4 min
+- Total execution time: 0.53 hours
 
 **By Phase:**
 
@@ -30,11 +30,11 @@ Progress: [████████░░] 60%
 | 00 | 2 | 12 min | 6 min |
 | 01 | 1 | 8 min | 8 min |
 | 02 | 1 | 2 min | 2 min |
-| 03 | 1 | 3 min | 3 min |
+| 03 | 2 | 5 min | 2.5 min |
 
 **Recent Trend:**
-- Last 5 plans: 7 min, 8 min, 2 min, 3 min
-- Trend: Consistent efficiency
+- Last 5 plans: 8 min, 2 min, 3 min, 2 min
+- Trend: Accelerating (gap closure plans very efficient)
 
 *Updated after each plan completion*
 
@@ -45,6 +45,7 @@ Progress: [████████░░] 60%
 | 01-01 | 8 min | 3 | 5 |
 | 02-01 | 2 min | 2 | 2 |
 | 03-01 | 3 min | 1 | 1 |
+| 03-02 | 2 min | 1 | 1 |
 
 ## Accumulated Context
 
@@ -72,8 +73,9 @@ Recent decisions affecting current work:
 - Size 18 for selected, size 8 for unselected: Balance between visibility and clickability (02-01)
 - Use OriginalID_PT for participant filter: Metadata provides unmasked IDs matching original Dash app (03-01)
 - Default all participants selected: Ensures full chart on first load, avoids blank chart confusion (03-01)
-- filtered_to_original mapping: Native Streamlit returns trace positions, map to original index for correct detail panel (03-01)
-- Clear selection when filtered out: Prevents stale selection state when filter removes selected point (03-01)
+- Scatter points always show all 563 solutions: Participant filter for Phase 5 arrows/areas only, not scatter points (03-02)
+- Removed show_points checkbox: Points are core feature, always visible (03-02)
+- Simplified click handling: Direct original_indices mapping, no filtered_to_original needed (03-02)
 
 ### Pending Todos
 
@@ -86,5 +88,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-14 (phase 3 execution)
-Stopped at: Completed 03-01-PLAN.md - Filtering and visibility controls with sidebar
+Stopped at: Completed 03-02-PLAN.md - Scatter plot always shows all solutions
 Resume file: None
