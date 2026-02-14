@@ -461,5 +461,50 @@ with col_detail:
                 st.warning("Screenshot unavailable")
         else:
             st.info("No screenshot available for this solution")
+
+        # Section 7: Space Exploration / Creativity Metrics (DETL-07, 08, 09, 10, 11)
+        st.divider()
+        st.markdown("##### Space Exploration / Creativity Metrics")
+
+        # Helper: Format metric or show 'N/A'
+        def fmt_metric(value, decimals=1, suffix=''):
+            """Format metric value or return N/A for missing data."""
+            if isinstance(value, str) and value == 'N/A':
+                return 'N/A'
+            try:
+                formatted = f"{float(value):.{decimals}f}"
+                return f"{formatted}{suffix}"
+            except (ValueError, TypeError):
+                return 'N/A'
+
+        # Area explored (DETL-07) - percent of full design space
+        st.markdown(
+            f"**Area explored** | Tot.: {fmt_metric(row['Area-Perc-FS'], 1, '%')} | "
+            f"Pre: {fmt_metric(row['Area-Perc-PRE'], 1, '%')} | "
+            f"Post: {fmt_metric(row['Area-Perc-POST'], 1, '%')}"
+        )
+
+        # Distance traveled (DETL-08) - sum of distances between consecutive solutions
+        st.markdown(
+            f"**Distance travel.** | Total: {fmt_metric(row['totaldist_FS'], 1)} | "
+            f"Pre: {fmt_metric(row['totaldist_PRE'], 1)} | "
+            f"Post: {fmt_metric(row['totaldist_PST'], 1)}"
+        )
+
+        # Clusters visited (DETL-09) - unique cluster IDs encountered
+        st.markdown(
+            f"**# Clusters visit.** | Total: {fmt_metric(row['n_clusters'], 0)} | "
+            f"Pre: {fmt_metric(row['n_clusters_pre'], 0)} | "
+            f"Post: {fmt_metric(row['n_clusters_post'], 0)}"
+        )
+
+        # Novelty (DETL-10) - neighbors count and density-based
+        st.markdown(
+            f"**Novelty** | Neighbors: {fmt_metric(row['novel_nn'], 2)} | "
+            f"Density: {fmt_metric(row['novelty_norm'], 2)}"
+        )
+
+        # Performance (DETL-11) - budget efficiency
+        st.markdown(f"**Solution Performance:** {fmt_metric(row['performance'], 2)}")
     else:
         st.info("Click a point on the scatter plot to view solution details")
