@@ -13,7 +13,7 @@ This roadmap transforms a 1175-line Dash application into a Streamlit Community 
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 0: Data Preparation & Pre-Computation** - Establish pre-computed data pipeline
-- [ ] **Phase 1: Minimal Streamlit Prototype** - Basic app structure and deployment validation
+- [x] **Phase 1: Minimal Streamlit Prototype** - Basic app structure and deployment validation
 - [ ] **Phase 2: Single-Chart Click Handling** - Interactive scatter plot with detail panel
 - [ ] **Phase 3: Filtering & Visibility Controls** - Participant selection and element toggles
 - [ ] **Phase 4: Performance Chart & Cross-Chart Sync** - Dual-chart bidirectional interaction
@@ -49,7 +49,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 01-01-PLAN.md -- Streamlit app with scatter plot, slim requirements, and deployment config
+- [x] 01-01-PLAN.md -- Streamlit app with scatter plot, slim requirements, and deployment config
 
 ### Phase 2: Single-Chart Click Handling
 **Goal**: Clicking any scatter point shows that solution's complete details and screenshot
@@ -118,7 +118,7 @@ Phases execute in numeric order: 0 -> 1 -> 2 -> 3 -> 4 -> 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 0. Data Preparation | 2/2 | ✓ Complete | 2026-02-14 |
-| 1. Minimal Prototype | 0/1 | Planning complete | - |
+| 1. Minimal Prototype | 1/1 | ✓ Complete | 2026-02-14 |
 | 2. Click Handling | 0/TBD | Not started | - |
 | 3. Filters & Toggles | 0/TBD | Not started | - |
 | 4. Chart Sync | 0/TBD | Not started | - |
