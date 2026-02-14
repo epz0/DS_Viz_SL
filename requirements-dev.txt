@@ -1,0 +1,7 @@
+# Development dependencies (full pipeline)
+# Includes production dependencies
+-r requirements.txt
+
+# Additional pipeline dependencies not needed in production
+# (most are already in requirements.txt from the Dash app era,
+#  but listing explicitly for clarity)

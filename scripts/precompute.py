@@ -791,6 +791,121 @@ def step_validate():
         if not fpath.exists():
             warnings.append(f"Missing intermediate file: {fname}")
 
+    # Validate df_base columns (all columns required by Streamlit app)
+    if (OUTPUT_DIR / 'df_base.parquet').exists():
+        try:
+            df = pd.read_parquet(OUTPUT_DIR / 'df_base.parquet')
+
+            # Required columns extracted from interactive_tool.py
+            required_cols = [
+                # Identity
+                'FullID', 'ParticipantID', 'SolutionID', 'GroupID',
+                # Embedding
+                'x_emb', 'y_emb',
+                # Original IDs (from unmask)
+                'OriginalID_PT', 'OriginalID_Group', 'OriginalID_Sol', 'OriginalID_PrePost',
+                # Result/cost
+                'result', 'budgetUsed', 'maxStress',
+                # Core attributes
+                'ca_sol', 'ca_deck', 'ca_str', 'ca_rck', 'ca_mtr', 'ca_perf', 'performance',
+                # Solution summary
+                'TLength', 'NSegm', 'NJoint',
+                # Visual
+                'HEX-Win', 'hovertxt', 'clust_symb', 'videoPreview',
+                # Full ID
+                'fullid_orig',
+                # Clustering
+                'cluster_id', 'n_clusters', 'n_clusters_pre', 'n_clusters_post',
+                # Distance metrics
+                'totaldist_FS', 'totaldist_PRE', 'totaldist_PST',
+                # Area metrics
+                'Area-Perc-FS', 'Area-Perc-PRE', 'Area-Perc-POST',
+                # Novelty
+                'novel_nn', 'novelty_norm',
+                # Design attributes (from original Excel)
+                'type', 'numAnchorsUsed',
+                'deckType_1', 'deckType_2',
+                'deckShape_1', 'deckShape_2', 'deckShape_3', 'deckShape_4',
+                'structurePosition_Top', 'structurePosition_Rock', 'structurePosition_Bottom',
+                'structureShape_1', 'structureShape_2', 'structureSize',
+                'rockSupportShape', 'rockSupportMat',
+                'materialRoad', 'materialReinfRoad', 'materialWood', 'materialSteel'
+            ]
+
+            missing_cols = [col for col in required_cols if col not in df.columns]
+            if missing_cols:
+                errors.append(f"df_base.parquet missing {len(missing_cols)} required columns: {missing_cols[:10]}" +
+                             (f" ... and {len(missing_cols)-10} more" if len(missing_cols) > 10 else ""))
+
+            # Row count validation
+            if len(df) == 0:
+                errors.append("df_base.parquet has 0 rows")
+            else:
+                logger.info(f"df_base.parquet has {len(df)} rows and {len(df.columns)} columns")
+
+        except Exception as e:
+            errors.append(f"Failed to validate df_base.parquet: {e}")
+    elif (OUTPUT_DIR / 'df_base.pkl').exists():
+        # Also check pickle version if parquet doesn't exist
+        try:
+            df = pd.read_pickle(OUTPUT_DIR / 'df_base.pkl')
+
+            # Same required columns check
+            required_cols = [
+                'FullID', 'ParticipantID', 'SolutionID', 'GroupID',
+                'x_emb', 'y_emb',
+                'OriginalID_PT', 'OriginalID_Group', 'OriginalID_Sol', 'OriginalID_PrePost',
+                'result', 'budgetUsed', 'maxStress',
+                'ca_sol', 'ca_deck', 'ca_str', 'ca_rck', 'ca_mtr', 'ca_perf', 'performance',
+                'TLength', 'NSegm', 'NJoint',
+                'HEX-Win', 'hovertxt', 'clust_symb', 'videoPreview',
+                'fullid_orig',
+                'cluster_id', 'n_clusters', 'n_clusters_pre', 'n_clusters_post',
+                'totaldist_FS', 'totaldist_PRE', 'totaldist_PST',
+                'Area-Perc-FS', 'Area-Perc-PRE', 'Area-Perc-POST',
+                'novel_nn', 'novelty_norm',
+                'type', 'numAnchorsUsed',
+                'deckType_1', 'deckType_2',
+                'deckShape_1', 'deckShape_2', 'deckShape_3', 'deckShape_4',
+                'structurePosition_Top', 'structurePosition_Rock', 'structurePosition_Bottom',
+                'structureShape_1', 'structureShape_2', 'structureSize',
+                'rockSupportShape', 'rockSupportMat',
+                'materialRoad', 'materialReinfRoad', 'materialWood', 'materialSteel'
+            ]
+
+            missing_cols = [col for col in required_cols if col not in df.columns]
+            if missing_cols:
+                errors.append(f"df_base.pkl missing {len(missing_cols)} required columns: {missing_cols[:10]}" +
+                             (f" ... and {len(missing_cols)-10} more" if len(missing_cols) > 10 else ""))
+
+            if len(df) == 0:
+                errors.append("df_base.pkl has 0 rows")
+            else:
+                logger.info(f"df_base.pkl has {len(df)} rows and {len(df.columns)} columns")
+
+        except Exception as e:
+            errors.append(f"Failed to validate df_base.pkl: {e}")
+
+    # Validate convex hulls
+    if (OUTPUT_DIR / 'convex_hulls.pkl').exists():
+        try:
+            with open(OUTPUT_DIR / 'convex_hulls.pkl', 'rb') as f:
+                hulls = pickle.load(f)
+
+            if not isinstance(hulls, dict):
+                errors.append("convex_hulls.pkl is not a dict")
+            elif 'full_ds' not in hulls:
+                errors.append("convex_hulls.pkl missing 'full_ds' key")
+            else:
+                # Check participant count (should be ~30+, there are 31 including gallery)
+                participant_keys = [k for k in hulls.keys() if k != 'full_ds']
+                if len(participant_keys) < 30:
+                    warnings.append(f"convex_hulls.pkl has only {len(participant_keys)} participants (expected ~30+)")
+                else:
+                    logger.info(f"convex_hulls.pkl has {len(participant_keys)} participant hulls + full_ds")
+        except Exception as e:
+            errors.append(f"Failed to validate convex_hulls.pkl: {e}")
+
     # Validate content if files exist
     if (OUTPUT_DIR / 'metadata.json').exists():
         try:
@@ -801,6 +916,23 @@ def step_validate():
             for key in required_keys:
                 if key not in metadata:
                     errors.append(f"metadata.json missing key: {key}")
+
+            # Additional checks
+            if 'participant_ids' in metadata and not isinstance(metadata['participant_ids'], list):
+                errors.append("metadata.json 'participant_ids' is not a list")
+            elif 'participant_ids' in metadata and len(metadata['participant_ids']) == 0:
+                errors.append("metadata.json 'participant_ids' is empty")
+
+            if 'color_mapping' in metadata and not isinstance(metadata['color_mapping'], dict):
+                errors.append("metadata.json 'color_mapping' is not a dict")
+            elif 'color_mapping' in metadata and len(metadata['color_mapping']) == 0:
+                errors.append("metadata.json 'color_mapping' is empty")
+
+            if 'ds_area' in metadata and not isinstance(metadata['ds_area'], (int, float)):
+                errors.append("metadata.json 'ds_area' is not a number")
+            elif 'ds_area' in metadata and metadata['ds_area'] <= 0:
+                errors.append("metadata.json 'ds_area' is not > 0")
+
         except Exception as e:
             errors.append(f"Failed to load metadata.json: {e}")
 
