@@ -78,7 +78,7 @@ Plans:
 
 Plans:
 - [x] 03-01-PLAN.md -- Sidebar controls with participant filter and visibility toggles
-- [ ] 03-02-PLAN.md -- Fix scatter trace to always use full df (gap closure from UAT)
+- [x] 03-02-PLAN.md -- Fix scatter trace to always use full df (gap closure from UAT)
 
 ### Phase 4: Performance Chart & Cross-Chart Sync
 **Goal**: Performance chart and scatter plot synchronize bidirectionally when user clicks either chart
@@ -122,6 +122,6 @@ Phases execute in numeric order: 0 -> 1 -> 2 -> 3 -> 4 -> 5
 | 0. Data Preparation | 2/2 | ✓ Complete | 2026-02-14 |
 | 1. Minimal Prototype | 1/1 | ✓ Complete | 2026-02-14 |
 | 2. Click Handling | 1/1 | ✓ Complete | 2026-02-14 |
-| 3. Filters & Toggles | 1/2 | In Progress | - |
+| 3. Filters & Toggles | 2/2 | ✓ Complete | 2026-02-14 |
 | 4. Chart Sync | 0/1 | Not started | - |
 | 5. Full Feature Parity | 0/2 | Not started | - |

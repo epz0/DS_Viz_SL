@@ -1,17 +1,37 @@
 ---
 phase: 03-filtering-visibility-controls
-verified: 2026-02-14T15:22:06Z
+verified: 2026-02-14T16:15:00Z
 status: passed
-score: 8/8 must-haves verified
-re_verification: false
+score: 4/4 must-haves verified
+re_verification: 
+  previous_status: passed
+  previous_score: 8/8
+  note: "Phase goal changed after UAT - re-verified against updated must-haves from 03-02-PLAN"
+  gaps_closed:
+    - "Scatter trace now uses full df instead of df_filtered"
+    - "show_points checkbox removed (points always visible)"
+    - "Empty filter guard removed (all points always visible)"
+    - "Click handling simplified (no filtered_to_original mapping)"
+  gaps_remaining: []
+  regressions: []
 ---
 
 # Phase 3: Filtering & Visibility Controls Verification Report
 
-**Phase Goal:** Users can filter by participant and toggle display elements independently
-**Verified:** 2026-02-14T15:22:06Z
+**Phase Goal:** Scatter plot always shows all solutions; participant filter prepared for Phase 5 arrows/areas
+**Verified:** 2026-02-14T16:15:00Z
 **Status:** passed
-**Re-verification:** No - initial verification
+**Re-verification:** Yes - after gap closure (03-02) following UAT diagnosis
+
+## Context
+
+**Phase goal evolution:**
+- **03-01 (initial):** "Users can filter by participant and toggle display elements independently" (scatter points ARE filtered)
+- **03-02 (gap closure):** "Scatter plot always shows all solutions; participant filter prepared for Phase 5 arrows/areas" (scatter points NOT filtered)
+
+**UAT findings:** User clarified that scatter plot should always display all 563 solutions. The participant filter is for controlling arrows and areas visibility (Phase 5), not for filtering scatter points. Implementation 03-01 incorrectly filtered scatter points.
+
+**Gap closure:** Plan 03-02 executed (commit 288c3243) to fix scatter plot rendering and simplify logic.
 
 ## Goal Achievement
 
@@ -19,38 +39,34 @@ re_verification: false
 
 | # | Truth | Status | Evidence |
 |---|-------|--------|----------|
-| 1 | Participant multi-select dropdown filters scatter plot to show only selected participants | ✓ VERIFIED | st.multiselect at line 65 with default=all_participants (line 68), df_filtered = df[df['OriginalID_PT'].isin(selected_participants)] at line 99 |
-| 2 | Points checkbox toggles visibility of scatter points | ✓ VERIFIED | st.checkbox "Points" at line 77 with value=True, conditional rendering if show_points: at line 149, st.info message at line 169 when disabled |
-| 3 | Arrows and Areas checkboxes are visible but disabled (future phases) | ✓ VERIFIED | st.checkbox "Arrows" at line 83 with disabled=True (line 88), st.checkbox "Areas" at line 90 with disabled=True (line 95) |
-| 4 | Filters and toggles work together -- unchecking Points hides all points even when participants are selected | ✓ VERIFIED | df_filtered created first (line 99), then show_points controls trace rendering (line 149), both conditions must be met for points to appear |
-| 5 | Click-to-inspect from Phase 2 still works correctly after filtering | ✓ VERIFIED | filtered_to_original mapping at line 144, click handler uses mapping at line 200 (clicked_original_idx = filtered_to_original[clicked_filtered_pos]), detail panel uses df.iloc[idx] at line 214 with original index |
-| 6 | Status caption shows filtered count (e.g. Showing 450 of 563 solutions from 20 of 31 participants) | ✓ VERIFIED | st.caption at lines 206-209 with dynamic format string |
-| 7 | All participants selected and all toggles enabled on first load (no blank chart) | ✓ VERIFIED | default=all_participants at line 68, show_points value=True at line 79 |
-| 8 | Deselecting all participants shows warning message instead of empty chart | ✓ VERIFIED | if df_filtered.empty check at line 102, st.warning message at line 103, st.stop() halts execution at line 104 |
+| 1 | Scatter plot displays all 563 solutions regardless of participant filter selection | ✓ VERIFIED | Scatter trace built from full df at line 134-150: x=df['x_emb'], y=df['y_emb'], iteration over df.iterrows() at line 115 (not df_filtered) |
+| 2 | Participant filter dropdown exists but has no effect until Phase 5 (arrows/areas) | ✓ VERIFIED | st.multiselect at lines 65-71, df_filtered computed at line 94 with comment explaining Phase 5 use |
+| 3 | Clicking any scatter point works correctly and shows proper solution details | ✓ VERIFIED | Click handler at lines 178-184 uses original_indices mapping (line 181), detail panel uses df.iloc[idx] at line 192 |
+| 4 | Status caption provides accurate feedback about total solutions | ✓ VERIFIED | st.caption at line 187 shows total count, not filtered count |
 
-**Score:** 8/8 truths verified
+**Score:** 4/4 truths verified
 
 ### Required Artifacts
 
 | Artifact | Expected | Status | Details |
 |----------|----------|--------|---------|
-| streamlit_app/streamlit_app.py | Sidebar controls with participant filter and visibility toggles integrated with existing click handling | ✓ VERIFIED | EXISTS (257 lines), SUBSTANTIVE (contains st.multiselect, st.sidebar, isin filtering, filtered_to_original mapping), WIRED (df_filtered used throughout) |
+| streamlit_app/streamlit_app.py | Scatter trace built from full df, participant filter only used for future features | ✓ VERIFIED | EXISTS (234 lines), SUBSTANTIVE (contains go.Scatter with x=df['x_emb'], comment explaining df_filtered for Phase 5), WIRED (scatter trace renders from df, not df_filtered) |
 
 ### Key Link Verification
 
 | From | To | Via | Status | Details |
 |------|----|----|--------|---------|
-| streamlit_app.py | st.sidebar | Sidebar widgets defined BEFORE main content | ✓ WIRED | with st.sidebar: block at line 59 before fig creation at line 146 |
-| streamlit_app.py | df['OriginalID_PT'].isin() | Pandas isin filtering on unmasked IDs | ✓ WIRED | df[df['OriginalID_PT'].isin(selected_participants)] at line 99 |
-| streamlit_app.py | df_filtered index mapping | customdata carries original DataFrame index | ✓ WIRED | customdata=filtered_to_original at line 164, mapping used in click handler at line 200 |
+| streamlit_app.py | go.Scatter trace | uses full df (not df_filtered) | ✓ WIRED | Line 134-150: go.Scatter(x=df['x_emb'], y=df['y_emb'], ...) uses full df |
+| streamlit_app.py | click handling | maps clicked position to df.index directly | ✓ WIRED | Line 181: clicked_original_idx = original_indices[clicked_pos] |
+| streamlit_app.py | df_filtered | prepared for Phase 5, not used for scatter | ✓ WIRED | Line 94 computes df_filtered with explanatory comment |
 
 ### Requirements Coverage
 
 | Requirement | Status | Details |
 |-------------|--------|---------|
-| FILT-01: Participant filter | ✓ SATISFIED | Truth 1 verified - multiselect dropdown filters scatter plot |
-| FILT-02: Element toggles | ✓ SATISFIED | Truths 2 and 3 verified - Points checkbox functional, Arrows/Areas disabled |
-| FILT-03: Combined filters | ✓ SATISFIED | Truth 4 verified - filters and toggles work together correctly |
+| FILT-01: Participant filter | ✓ SATISFIED | Filter exists (lines 65-71), prepared for Phase 5 use |
+| FILT-02: Element toggles | ✓ SATISFIED | Arrows/Areas checkboxes present (lines 77-90), disabled |
+| FILT-03: Combined filters | ✓ SATISFIED | Scatter points always visible, filter ready for Phase 5 |
 
 ### Anti-Patterns Found
 
@@ -59,54 +75,68 @@ No anti-patterns detected.
 Scan results:
 - TODO/FIXME/PLACEHOLDER comments: None found
 - Empty implementations: None found
-- Console.log debugging: None found
 - Stub functions: None found
+- show_points references: 0 (correctly removed)
+- df_filtered.empty checks: 0 (correctly removed)
+
+### Gap Closure Verification
+
+**Changes from 03-01 to 03-02:**
+
+| Change | Verified | Evidence |
+|--------|----------|----------|
+| Scatter trace uses full df instead of df_filtered | ✓ | Line 135: x=df['x_emb'] (not df_filtered) |
+| show_points checkbox removed | ✓ | grep "show_points" returns 0 results |
+| Empty filter guard removed | ✓ | grep "df_filtered.empty" returns 0 results |
+| Selection clearing logic removed | ✓ | No code checks if selected point filtered out |
+| Iteration over full df | ✓ | Line 115: for orig_idx, row in df.iterrows(): |
+| original_indices replaces filtered_to_original | ✓ | Line 128: original_indices = df.index.tolist() |
+| Status caption shows total count | ✓ | Line 187: Shows len(df) not len(df_filtered) |
+| Conditional scatter rendering removed | ✓ | Scatter trace always added (no if show_points wrapper) |
+| df_filtered retained with comment | ✓ | Line 93-94: Comment explains Phase 5 use |
+| Participant filter UI retained | ✓ | Lines 65-71: multiselect dropdown exists |
+
+**All 10 planned changes verified in codebase.**
 
 ### Human Verification Required
 
-#### 1. Visual Filter Response
+#### 1. Scatter Plot Always Full
 
-**Test:** Open app, deselect 10 participants from multiselect dropdown
-**Expected:** Scatter plot updates to show fewer points, layout remains stable, no visual glitches
-**Why human:** Visual rendering quality and animation smoothness cannot be verified programmatically
+**Test:** Open app, observe initial scatter plot, deselect some participants, observe scatter plot
+**Expected:** Scatter plot shows all 563 solutions on load and DOES NOT change when participants are deselected
+**Why human:** Visual confirmation that filter has no effect on scatter points
 
-#### 2. Empty State UI Flow
+#### 2. Click Handling Accuracy
 
-**Test:** Deselect all participants in multiselect
-**Expected:** Warning message appears, chart area remains clean (no errors or broken layouts)
-**Why human:** User experience of empty state handling requires human judgment
+**Test:** With all participants selected, click a point and note its details. Deselect that participant. Click the same visual point again.
+**Expected:** Point remains clickable, detail panel shows same solution data before and after filter change
+**Why human:** Verifies index mapping works correctly across all filter states
 
-#### 3. Points Toggle Interaction
+#### 3. Status Caption Accuracy
 
-**Test:** Uncheck Points checkbox, verify chart shows info message, re-check Points
-**Expected:** Points disappear and reappear smoothly, info message appears/disappears appropriately
-**Why human:** Toggle responsiveness and visual feedback quality needs human assessment
+**Test:** Load app (31 participants), check status caption, deselect 10 participants, check status caption again
+**Expected:** Caption always reads "Showing 563 solutions from 31 participants" regardless of filter selection
+**Why human:** Confirms caption reflects actual visible data
 
-#### 4. Click After Filtering Accuracy
+#### 4. No Empty States
 
-**Test:** Filter to 5 participants, click a point, verify detail panel shows CORRECT solution
-**Expected:** Detail panel shows the exact solution that was clicked, not a different one
-**Why human:** Index mapping correctness requires verifying specific data values match
+**Test:** Deselect all participants from multiselect dropdown
+**Expected:** Scatter plot still shows all 563 solutions, no warning message, no errors
+**Why human:** Verifies empty filter guard was successfully removed
 
-#### 5. Selection Persistence Across Filter Changes
+#### 5. Arrows/Areas Placeholders
 
-**Test:** Click point in full dataset, filter to subset containing it, verify highlight persists, then filter to exclude it
-**Expected:** Highlight persists when point remains in filtered set, clears when point filtered out
-**Why human:** State management across user interactions requires testing actual user workflows
-
-#### 6. Status Caption Accuracy
-
-**Test:** With various filter combinations, verify status caption math is correct
-**Expected:** Numbers match actual visible points and selected participant count
-**Why human:** Requires counting actual visible points and comparing to caption
+**Test:** Check sidebar Display section
+**Expected:** Two checkboxes labeled "Arrows" and "Areas" are visible but greyed out (disabled)
+**Why human:** UI affordance for future features needs visual confirmation
 
 ### Integration Verification
 
 **Phase 2 regression check:**
-- Click handling code still uses filtered_to_original mapping (lines 197-203) ✓
+- Click handling still works (lines 178-184) ✓
 - Detail panel still shows correct participant info, solution details, attributes, screenshot ✓
 - Session state selected_point_idx logic preserved ✓
-- Marker highlighting still works with df_filtered.iterrows() ✓
+- Marker highlighting still works with df.iterrows() (now over full df, not df_filtered) ✓
 
 **No regressions detected.**
 
@@ -114,26 +144,26 @@ Scan results:
 
 ## Verification Summary
 
-**All must-haves verified.** Phase 3 goal achieved.
+**All must-haves verified.** Phase 3 goal achieved (updated goal from 03-02).
 
-The codebase demonstrates complete implementation of filtering and visibility controls:
-- Sidebar structure correctly placed before main content (avoids rendering issues)
-- Participant filtering works via pandas isin() on OriginalID_PT column
-- DataFrame filtering preserves original index for correct click handling
-- filtered_to_original mapping ensures clicked points map to correct solutions
-- Points checkbox conditionally renders scatter trace
-- Arrows/Areas checkboxes present but disabled for Phase 5
-- Empty state handled gracefully with warning and st.stop()
-- Selected point cleared when filtered out
-- Dynamic status caption reflects current filter state
-- All Phase 2 click handling functionality preserved
+The codebase demonstrates correct implementation of the gap closure:
+- Scatter trace renders from full df (all 563 solutions), not df_filtered
+- Iteration over df.iterrows() ensures all points included in marker arrays
+- Participant filter exists in UI but has no effect on scatter points (prepared for Phase 5)
+- df_filtered computed with explanatory comment for future use
+- Click handling simplified - uses original_indices directly (no complex mapping)
+- Status caption shows total solution count (not filtered count)
+- No empty filter guards, no show_points checkbox, no conditional scatter rendering
+- Phase 5 placeholders (Arrows/Areas checkboxes) remain disabled
 
-**Automated verification:** PASSED (8/8 truths verified, 1/1 artifacts verified, 3/3 key links wired)
-**Human verification:** 6 tests recommended to validate user experience and visual quality
+**Key improvement over 03-01:** Simplified architecture with clearer separation of concerns. Participant filter prepared for future arrows/areas features without interfering with core scatter plot functionality.
+
+**Automated verification:** PASSED (4/4 truths verified, 1/1 artifacts verified, 3/3 key links wired, 10/10 gap closure changes confirmed)
+**Human verification:** 5 tests recommended to validate user experience
 
 **Ready for Phase 4:** Performance Chart & Cross-Chart Sync
 
 ---
 
-_Verified: 2026-02-14T15:22:06Z_
+_Verified: 2026-02-14T16:15:00Z_
 _Verifier: Claude (gsd-verifier)_
