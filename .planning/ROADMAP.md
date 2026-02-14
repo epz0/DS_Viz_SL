@@ -74,10 +74,10 @@ Plans:
   1. Participant multi-select dropdown filters scatter plot to show only selected participants
   2. Checkboxes independently toggle visibility of Points, Arrows, and Areas
   3. Filters and toggles work together (e.g., showing only Areas for specific participants updates correctly)
-**Plans**: TBD
+**Plans**: 1 plan
 
 Plans:
-- [ ] TBD
+- [ ] 03-01-PLAN.md -- Sidebar controls with participant filter and visibility toggles
 
 ### Phase 4: Performance Chart & Cross-Chart Sync
 **Goal**: Performance chart and scatter plot synchronize bidirectionally when user clicks either chart
@@ -120,6 +120,6 @@ Phases execute in numeric order: 0 -> 1 -> 2 -> 3 -> 4 -> 5
 | 0. Data Preparation | 2/2 | ✓ Complete | 2026-02-14 |
 | 1. Minimal Prototype | 1/1 | ✓ Complete | 2026-02-14 |
 | 2. Click Handling | 0/1 | In Progress | - |
-| 3. Filters & Toggles | 0/TBD | Not started | - |
+| 3. Filters & Toggles | 0/1 | Not started | - |
 | 4. Chart Sync | 0/TBD | Not started | - |
 | 5. Full Feature Parity | 0/TBD | Not started | - |
