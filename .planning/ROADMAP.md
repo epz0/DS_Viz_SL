@@ -30,10 +30,11 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. All cached data files exist in streamlit_app/data/ (parquet, pickle, JSON)
   3. Validation confirms all 80+ columns required by visualization are present in pre-computed files
   4. Existing analysis scripts in scripts/ directory remain functional for local use
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] TBD
+- [ ] 00-01-PLAN.md -- Build precompute.py pipeline script with all computation steps
+- [ ] 00-02-PLAN.md -- Validation, requirements-dev.txt, and end-to-end pipeline run
 
 ### Phase 1: Minimal Streamlit Prototype
 **Goal**: Basic Streamlit app deploys to Community Cloud and loads pre-computed data efficiently
@@ -116,7 +117,7 @@ Phases execute in numeric order: 0 -> 1 -> 2 -> 3 -> 4 -> 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 0. Data Preparation | 0/TBD | Not started | - |
+| 0. Data Preparation | 0/2 | Planning complete | - |
 | 1. Minimal Prototype | 0/TBD | Not started | - |
 | 2. Click Handling | 0/TBD | Not started | - |
 | 3. Filters & Toggles | 0/TBD | Not started | - |
