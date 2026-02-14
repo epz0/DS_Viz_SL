@@ -1,0 +1,20 @@
+*.pyc
+__pycache__/
+#*.npy
+#.pkl
+#.csv
+#*.xlsx
+*.png
+
+*.html
+*.svg
+*.emf
+
+/validation
+/viz
+
+# Virtual environment
+venv/
+
+# Intermediate pipeline files (keep final outputs)
+streamlit_app/data/intermediate/
