@@ -5,3 +5,4 @@ plotly>=5.23.0
 pandas>=2.2.0
 numpy>=2.0.0
 shapely>=2.0.0
+streamlit-plotly-events>=0.0.6
